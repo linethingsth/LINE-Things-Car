@@ -1,0 +1,273 @@
+body, table {
+  font-size: 14pt;
+  font-family: "Montserrat", sans-serif;
+  margin: 0pt;
+  text-align: center;
+  padding-top: 18pt;
+}
+
+p {
+    padding: 0pt 14pt;
+}
+
+.btn {
+    padding: 2pt;
+    font-size: 14pt;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-led-toggle {
+    box-shadow: 0 4pt 8pt 0 rgba(0,0,0,0.2), 0 3pt 10pt 0 rgba(0,0,0,0.19);
+    color: #f8f9fa; /* Light */
+    background-color: #6c757d; /* Gray */
+    width: 160pt;
+    font-weight: bold;
+    height: 40pt;
+    border: 2pt solid black;
+    border-radius: 8pt;
+}
+
+.btn-led-toggle:active {
+    transform: translateY(4pt);
+    box-shadow: 0 2pt 4pt 0 rgba(0,0,0,0.2), 0 1pt 5pt 0 rgba(0,0,0,0.19);
+    background-color: #6c757d; /* Gray */
+}
+
+.led-on, .led-on:active {
+    background-color: #16C464; /* LINE Green */
+}
+
+.btn-state {
+    box-shadow: 0pt 6pt #999;
+    border-radius: 4pt;
+    margin-bottom: 8pt;
+    width: 100pt;
+    border: 1pt solid #6c757d; /* Gray */
+    color: #6c757d; /* Gray */
+    background-color: #f8f9fa; /* Light */
+}
+
+.btn-state:active, .pressed {
+    color: #343a40; /* Dark */
+    border: 1pt solid #343a40; /* Dark */
+    box-shadow: 0 2pt #666;
+    transform: translateY(4pt);
+}
+
+.inactive {
+    color: #6c757d; /* Gray */
+}
+
+.success {
+    color: #16C464; /* LINE Green */
+}
+
+.error {
+    color: #dc3545; /* Red */
+}
+
+.hidden {
+    display: none;
+}
+
+.device-info-table {
+    width: 80%;
+    margin: auto;
+    padding: 0;
+}
+
+.device-info-cell {
+    text-align: left;
+    vertical-align: middle;
+    padding-bottom: 8px;
+}
+
+.device-info-key {
+    padding-right: 10px;
+    word-wrap: none;
+}
+
+.device-info-val {
+    padding-left: 10px;
+    word-wrap: break-word;
+    max-width: 200px;
+    font-family: monospace, monospace;
+}
+
+.zone {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 30%;
+    left: 0;
+    bottom: 0;
+    background-color: cornsilk;
+}
+
+body {
+  text-align: center;
+  vertical-align: center;
+  margin: 20px 10px 0;
+  background-color: #31313B;
+}
+
+.wifi-symbol {
+  display: none;
+}
+
+
+.wifi-symbol [foo], .wifi-symbol-1 {
+  position: relative;
+  top: -100px;
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  left: -15px;
+  -ms-transform: rotate(-75deg) translate(-100px);
+  -moz-transform: rotate(-75deg) translate(-100px);
+  -o-transform: rotate(-75deg) translate(-100px);
+  -webkit-transform: rotate(-75deg) translate(-100px);
+  transform: rotate(-75deg) translate(-100px);
+}
+
+.wifi-symbol [foo], .wifi-symbol-2 {
+  position: relative;
+  top: -30px;
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  left: 135px;
+  -ms-transform: rotate(-15deg) translate(-100px);
+  -moz-transform: rotate(-15deg) translate(-100px);
+  -o-transform: rotate(-15deg) translate(-100px);
+  -webkit-transform: rotate(-15deg) translate(-100px);
+  transform: rotate(-15deg) translate(-100px);
+}
+
+.wifi-symbol .wifi-circle {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 21.42857px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  /* border-color: #00A9C2; */
+  border-style: solid;
+  border-width: 1em 1em 0 0;
+  -webkit-border-radius: 0 100% 0 0;
+  border-radius: 0 100% 0 0;
+  opacity: 0;
+  /* -o-animation: wifianimation 2s infinite;
+  -moz-animation: wifianimation 2s infinite;
+  -webkit-animation: wifianimation 2s infinite;
+  animation: wifianimation 2s infinite; */
+}
+
+.wifi-symbol .wifi-circle.first {
+  -o-animation-delay: 800ms;
+  -moz-animation-delay: 800ms;
+  -webkit-animation-delay: 800ms;
+  animation-delay: 800ms;
+}
+
+.wifi-symbol .wifi-circle.first.active {
+  opacity: 1;
+  border-color: #FF0000;
+  /* background-color: #E25822; */
+}
+
+.wifi-symbol .wifi-circle.second {
+  width: 5em;
+  height: 5em;
+  -o-animation-delay: 400ms;
+  -moz-animation-delay: 400ms;
+  -webkit-animation-delay: 400ms;
+  animation-delay: 400ms;
+}
+
+.wifi-symbol .wifi-circle.second.active {
+  opacity: 1;
+  border-color: #FF8C00;
+  /* background-color: #FF8C00; */
+}
+
+.wifi-symbol .wifi-circle.third {
+  width: 3em;
+  height: 3em;
+}
+
+.wifi-symbol .wifi-circle.third.active {
+  opacity: 1;
+  border-color: #FFEF00;
+  /* background-color: #FFEF00; */
+}
+
+.wifi-symbol .wifi-circle.fourth {
+  width: 1em;
+  height: 1em;
+  opacity: 0;
+  /* background-color: #16C464; */
+  -o-animation: none;
+  -moz-animation: none;
+  -webkit-animation: none;
+  animation: none;
+}
+
+.wifi-symbol .wifi-circle.fourth.active {
+  opacity: 1;
+  border-color: #DFFF00;
+  /* background-color: #16C464; */
+}
+
+@-o-keyframes wifianimation
+{
+  0% {
+    opacity: 0.4;
+  }
+  5% {
+    opactiy: 1;
+  }
+  6% {
+    opactiy: 0.1;
+  }
+  100% {
+    opactiy: 0.1;
+  }
+}
+
+@-moz-keyframes wifianimation
+{
+  0% {
+    opacity: 0.4;
+  }
+  5% {
+    opactiy: 1;
+  }
+  6% {
+    opactiy: 0.1;
+  }
+  100% {
+    opactiy: 0.1;
+  }
+}
+
+@-webkit-keyframes wifianimation
+{
+  0% {
+    opacity: 0.4;
+  }
+  5% {
+    opactiy: 1;
+  }
+  6% {
+    opactiy: 0.1;
+  }
+  100% {
+    opactiy: 0.1;
+  }
+}
