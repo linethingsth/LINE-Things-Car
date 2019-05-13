@@ -17,7 +17,7 @@ let clickCount = 0;
 // -------------- //
 
 window.onload = () => {
-  initializeApp();
+  // initializeApp();
 };
 
 // ----------------- //
@@ -308,4 +308,11 @@ function setSensorActive(el, active) {
   } else {
     el.classList.remove("active");
   }
+}
+
+function getJoystickMapping(degree) {
+  var arr = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+  console.log(parseInt(degree / 45))
+  console.log(arr[parseInt(degree / 45)])
+  return new Uint8Array([arr[parseInt(degree / 45)]])
 }

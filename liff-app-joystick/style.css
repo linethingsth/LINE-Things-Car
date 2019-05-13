@@ -107,6 +107,7 @@ p {
 }
 
 body {
+  overflow: hidden;
   text-align: center;
   vertical-align: center;
   margin: 20px 10px 0;
