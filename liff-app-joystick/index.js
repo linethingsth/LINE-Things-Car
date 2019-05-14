@@ -261,8 +261,8 @@ function liffGetLeftSensorCharacteristic(characteristic) {
 }
 
 function liffGetRightSensorCharacteristic(characteristic) {
-  // Add notification hook for left sensor
-  // (Get notified when left sensor changes)
+  // Add notification hook for right sensor
+  // (Get notified when right sensor changes)
   characteristic.startNotifications().then(() => {
     characteristic.addEventListener('characteristicvaluechanged', e => {
       const val = (new Uint8Array(e.target.value.buffer))[0];
@@ -331,7 +331,7 @@ function liffSendDirectionState(state) {
 function liffSendSpeedState(state) {
   var speedMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
   var value = new Uint8Array([speedMapping[state]])
-  window.directionCharacteristic.writeValue(value)
+  window.speedCharacteristic.writeValue(value)
   .catch(error => {
     uiStatusError(makeErrorMsg(error), false);
   });
