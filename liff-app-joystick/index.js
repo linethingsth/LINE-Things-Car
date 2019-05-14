@@ -1,8 +1,10 @@
 // User service UUID: Change this to your generated service UUID
 const USER_SERVICE_UUID = '9645527a-5026-4733-9b63-1a9d7b0dad4c'; // LED, Button
 // User service characteristics
-const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
-const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const DIRECTION_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
+const SPEED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
+const LEFT_SENSOR_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const RIGHT_SENSOR_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
 
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
@@ -17,34 +19,16 @@ let clickCount = 0;
 // -------------- //
 
 window.onload = () => {
-  // initializeApp();
+  initializeApp();
 };
 
 // ----------------- //
 // Handler functions //
 // ----------------- //
 
-function handlerToggleLed() {
-  ledState = !ledState;
-
-  uiToggleLedButton(ledState);
-  liffToggleDeviceLedState(ledState);
-}
-
 // ------------ //
 // UI functions //
 // ------------ //
-
-function uiToggleLedButton(state) {
-  const el = document.getElementById("btn-led-toggle");
-  el.innerText = state ? "Switch LED OFF" : "Switch LED ON";
-
-  if (state) {
-    el.classList.add("led-on");
-  } else {
-    el.classList.remove("led-on");
-  }
-}
 
 function uiCountPressButton() {
   clickCount++;
@@ -208,19 +192,38 @@ function liffConnectToDevice(device) {
 }
 
 function liffGetUserService(service) {
-  // Button pressed state
-  service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
-    liffGetButtonStateCharacteristic(characteristic);
+  // LEFT Sensor
+  service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
+    liffGetLeftSensorCharacteristic(characteristic);
   }).catch(error => {
     uiStatusError(makeErrorMsg(error), false);
   });
 
-  // Toggle LED
-  service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
-    window.ledCharacteristic = characteristic;
+  // RIGHT Sensor
+  service.getCharacteristic(RIGHT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
+    liffGetRightSensorCharacteristic(characteristic);
+  }).catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+
+
+  // Direction
+  service.getCharacteristic(DIRECTION_CHARACTERISTIC_UUID).then(characteristic => {
+    window.directionCharacteristic = characteristic;
 
     // Switch off by default
-    liffToggleDeviceLedState(false);
+    liffSendDirectionState(0);
+  }).catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+
+
+  // Speed
+  service.getCharacteristic(SPEED_CHARACTERISTIC_UUID).then(characteristic => {
+    window.speedCharacteristic = characteristic;
+
+    // Switch off by default
+    liffSendSpeedState(0);
   }).catch(error => {
     uiStatusError(makeErrorMsg(error), false);
   });
@@ -240,9 +243,9 @@ function liffGetPSDIService(service) {
   });
 }
 
-function liffGetButtonStateCharacteristic(characteristic) {
-  // Add notification hook for button state
-  // (Get notified when button state changes)
+function liffGetLeftSensorCharacteristic(characteristic) {
+  // Add notification hook for left sensor
+  // (Get notified when left sensor changes)
   characteristic.startNotifications().then(() => {
     characteristic.addEventListener('characteristicvaluechanged', e => {
       const val = (new Uint8Array(e.target.value.buffer))[0];
@@ -250,7 +253,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
         setSensor(true, val)
       } else {
         setSensor(true, 0)
-        setSensor(false, 0)
       }
     });
   }).catch(error => {
@@ -258,12 +260,19 @@ function liffGetButtonStateCharacteristic(characteristic) {
   });
 }
 
-function liffToggleDeviceLedState(state) {
-  // on: 0x01
-  // off: 0x00
-  window.ledCharacteristic.writeValue(
-    state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
-  ).catch(error => {
+function liffGetRightSensorCharacteristic(characteristic) {
+  // Add notification hook for left sensor
+  // (Get notified when left sensor changes)
+  characteristic.startNotifications().then(() => {
+    characteristic.addEventListener('characteristicvaluechanged', e => {
+      const val = (new Uint8Array(e.target.value.buffer))[0];
+      if (val > 0) {
+        setSensor(false, val)
+      } else {
+        setSensor(false, 0)
+      }
+    });
+  }).catch(error => {
     uiStatusError(makeErrorMsg(error), false);
   });
 }
@@ -310,9 +319,51 @@ function setSensorActive(el, active) {
   }
 }
 
+function liffSendDirectionState(state) {
+  var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
+  var value = new Uint8Array([directionMapping[state]])
+  window.directionCharacteristic.writeValue(value)
+  .catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+}
+
+function liffSendSpeedState(state) {
+  var speedMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+  var value = new Uint8Array([speedMapping[state]])
+  window.directionCharacteristic.writeValue(value)
+  .catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+}
+
 function getJoystickMapping(degree) {
-  var arr = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
-  console.log(parseInt(degree / 45))
-  console.log(arr[parseInt(degree / 45)])
-  return new Uint8Array([arr[parseInt(degree / 45)]])
+  return parseInt(degree / 45) + 1;
+}
+
+function joystickHandler(evt, data) {
+  console.log("Force", data.force)
+  if (data.force) {
+    if (data.force > 1) {
+      liffSendSpeedState(5);
+    } else if (data.force > 0.8) {
+      liffSendSpeedState(4);
+    } else if (data.force > 0.7) {
+      liffSendSpeedState(3);
+    } else if (data.force > 0.6) {
+      liffSendSpeedState(2);
+    } else if (data.force > 0.5) {
+      liffSendSpeedState(1);
+    } else {
+      liffSendSpeedState(0);
+    }
+    console.log("Degree", data.angle.degree)
+    console.log("JoystickMapping", getJoystickMapping(data.angle.degree))
+    liffSendDirectionState(getJoystickMapping(data.angle.degree))
+  } else {
+    console.log("Reset Speed and Direction")
+    liffSendSpeedState(0);
+    liffSendDirectionState(0);
+  }
+
 }

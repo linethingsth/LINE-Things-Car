@@ -51,19 +51,9 @@
       color: 'black'
     });
 
-    semi.on('start move dir', function (evt, data) {
-      // Do something.
-      console.log("start move dir", data.force)
-      if (data.force && data.force > 1) {
-        console.log(data.angle.degree)
-        console.log(getJoystickMapping(data.angle.degree))
-      }
-    });
+    semi.on('start move dir', joystickHandler);
 
-    semi.on('end hidden destroyed', function (evt, data) {
-      // Do something.
-      console.log("end hidden destroyed")
-    });
+    semi.on('end hidden destroyed', joystickHandler);
   </script>
 </body>
 
