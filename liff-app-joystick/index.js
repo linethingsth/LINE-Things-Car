@@ -320,7 +320,7 @@ function setSensorActive(el, active) {
 }
 
 function liffSendDirectionState(state) {
-  var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
+  var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
   var value = new Uint8Array([directionMapping[state]])
   window.directionCharacteristic.writeValue(value)
   .catch(error => {
@@ -338,7 +338,7 @@ function liffSendSpeedState(state) {
 }
 
 function getJoystickMapping(degree) {
-  return parseInt(degree / 45) + 1;
+  return parseInt(degree / 60) + 1;
 }
 
 function joystickHandler(evt, data) {
