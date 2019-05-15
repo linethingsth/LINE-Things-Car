@@ -197,11 +197,11 @@ function liffConnectToDevice(device) {
 
 function liffGetUserService(service) {
   // Notify Characteristic
-  service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID).then(characteristic => {
-    liffGetNotifyCharacteristic(characteristic);
-  }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
-  });
+  // service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID).then(characteristic => {
+  //   liffGetNotifyCharacteristic(characteristic);
+  // }).catch(error => {
+  //   uiStatusError(makeErrorMsg(error), false);
+  // });
 
   // LEFT Sensor
   service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
