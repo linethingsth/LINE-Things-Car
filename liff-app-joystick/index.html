@@ -42,6 +42,12 @@
     <h1>JOYSTICK ZONE</h1>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.2.0/vconsole.min.js"></script>
+  <script>
+    // init vConsole
+    var vConsole = new VConsole();
+  </script>
+  <script src="index.js"></script>
   <script src="./nipplejs.js"></script>
   <script>
     var semi = nipplejs.create({
@@ -56,13 +62,6 @@
 
     semi.on('end hidden destroyed', joystickHandler);
   </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.2.0/vconsole.min.js"></script>
-  <script>
-    // init vConsole
-    var vConsole = new VConsole();
-  </script>
-  <script src="index.js"></script>
 </body>
 
 </html>
