@@ -108,8 +108,8 @@ function uiStatusError(message, showLoadingAnimation) {
   // elControls.classList.add("hidden");
 }
 
-function makeErrorMsg(errorObj) {
-  return "Error\n" + errorObj.code + "\n" + errorObj.message;
+function makeErrorMsg(source, errorObj) {
+  return "Error\n" + "Source: " + source + "\n" + errorObj.code + "\n" + errorObj.message;
 }
 
 // -------------- //
@@ -117,14 +117,14 @@ function makeErrorMsg(errorObj) {
 // -------------- //
 
 function initializeApp() {
-  liff.init(() => initializeLiff(), error => uiStatusError(makeErrorMsg(error), false));
+  liff.init(() => initializeLiff(), error => uiStatusError(makeErrorMsg("initializeApp", error), false));
 }
 
 function initializeLiff() {
   liff.initPlugins(['bluetooth']).then(() => {
     liffCheckAvailablityAndDo(() => liffRequestDevice());
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("initializeLiff", error), false);
   });
 }
 
@@ -139,7 +139,7 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
       setTimeout(() => liffCheckAvailablityAndDo(callbackIfAvailable), 10000);
     }
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffCheckAvailablityAndDo", error), false);
   });;
 }
 
@@ -147,7 +147,7 @@ function liffRequestDevice() {
   liff.bluetooth.requestDevice().then(device => {
     liffConnectToDevice(device);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffRequestDevice", error), false);
   });
 }
 
@@ -163,12 +163,12 @@ function liffConnectToDevice(device) {
     device.gatt.getPrimaryService(USER_SERVICE_UUID).then(service => {
       liffGetUserService(service);
     }).catch(error => {
-      uiStatusError(makeErrorMsg(error), false);
+      uiStatusError(makeErrorMsg("liffConnectToDevice: USER_SERVICE_UUID", error), false);
     });
     device.gatt.getPrimaryService(PSDI_SERVICE_UUID).then(service => {
       liffGetPSDIService(service);
     }).catch(error => {
-      uiStatusError(makeErrorMsg(error), false);
+      uiStatusError(makeErrorMsg("liffConnectToDevice: USER_SERVICE_UUID", error), false);
     });
 
     // Device disconnect callback
@@ -191,7 +191,7 @@ function liffConnectToDevice(device) {
 
     device.addEventListener('gattserverdisconnected', disconnectCallback);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffConnectToDevice: connect", error), false);
   });
 }
 
@@ -207,14 +207,14 @@ function liffGetUserService(service) {
   service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
     liffGetLeftSensorCharacteristic(characteristic);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: LEFT_SENSOR_CHARACTERISTIC_UUID", error), false);
   });
 
   // RIGHT Sensor
   service.getCharacteristic(RIGHT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
     liffGetRightSensorCharacteristic(characteristic);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: RIGHT_SENSOR_CHARACTERISTIC_UUID", error), false);
   });
 
 
@@ -222,10 +222,10 @@ function liffGetUserService(service) {
   service.getCharacteristic(DIRECTION_CHARACTERISTIC_UUID).then(characteristic => {
     window.directionCharacteristic = characteristic;
 
-    // Switch off by default
+    // Direction 0
     liffSendDirectionState(0);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: DIRECTION_CHARACTERISTIC_UUID", error), false);
   });
 
 
@@ -233,10 +233,10 @@ function liffGetUserService(service) {
   service.getCharacteristic(SPEED_CHARACTERISTIC_UUID).then(characteristic => {
     window.speedCharacteristic = characteristic;
 
-    // Switch off by default
+    // Speed 0
     liffSendSpeedState(0);
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: SPEED_CHARACTERISTIC_UUID", error), false);
   });
 }
 
@@ -250,7 +250,7 @@ function liffGetPSDIService(service) {
       .reduce((output, byte) => output + ("0" + byte.toString(16)).slice(-2), "");
     // document.getElementById("device-psdi").innerText = psdi;
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetPSDIService: PSDI_CHARACTERISTIC_UUID", error), false);
   });
 }
 
@@ -263,7 +263,7 @@ function liffGetNotifyCharacteristic(characteristic) {
       console.log("Notify Characteristic", val)
     });
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetNotifyCharacteristic", error), false);
   });
 }
 
@@ -280,7 +280,7 @@ function liffGetLeftSensorCharacteristic(characteristic) {
       }
     });
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetLeftSensorCharacteristic", error), false);
   });
 }
 
@@ -297,7 +297,7 @@ function liffGetRightSensorCharacteristic(characteristic) {
       }
     });
   }).catch(error => {
-    uiStatusError(makeErrorMsg(error), false);
+    uiStatusError(makeErrorMsg("liffGetRightSensorCharacteristic", error), false);
   });
 }
 
@@ -350,7 +350,7 @@ function liffSendDirectionState(state) {
     var value = new Uint8Array([directionMapping[state]])
     window.directionCharacteristic.writeValue(value)
     .catch(error => {
-      uiStatusError(makeErrorMsg(error), false);
+      uiStatusError(makeErrorMsg("liffSendDirectionState", error), false);
     });
   }
 }
@@ -362,7 +362,7 @@ function liffSendSpeedState(state) {
     var value = new Uint8Array([speedMapping[state]])
     window.speedCharacteristic.writeValue(value)
     .catch(error => {
-      uiStatusError(makeErrorMsg(error), false);
+      uiStatusError(makeErrorMsg("liffSendSpeedState", error), false);
     });
   }
 }
