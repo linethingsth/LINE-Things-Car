@@ -55,7 +55,7 @@ function uiToggleStateButton(pressed) {
 
 function uiToggleDeviceConnected(connected) {
   const elStatus = document.getElementById("status");
-  const elControls = document.getElementById("controls");
+  // const elControls = document.getElementById("controls");
 
   elStatus.classList.remove("error");
 
@@ -67,7 +67,7 @@ function uiToggleDeviceConnected(connected) {
     elStatus.classList.add("success");
     elStatus.innerText = "Device connected";
     // Show controls
-    elControls.classList.remove("hidden");
+    // elControls.classList.remove("hidden");
   } else {
     // Show loading animation
     uiToggleLoadingAnimation(true);
@@ -76,7 +76,7 @@ function uiToggleDeviceConnected(connected) {
     elStatus.classList.add("inactive");
     elStatus.innerText = "Device disconnected";
     // Hide controls
-    elControls.classList.add("hidden");
+    // elControls.classList.add("hidden");
   }
 }
 
