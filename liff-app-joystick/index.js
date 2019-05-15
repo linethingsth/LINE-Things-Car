@@ -1,10 +1,10 @@
 // User service UUID: Change this to your generated service UUID
-const USER_SERVICE_UUID = '9645527a-5026-4733-9b63-1a9d7b0dad4c'; // LED, Button
+const USER_SERVICE_UUID = '36752cf3-739c-4625-aea1-4d47a70ad656'; // LED, Button
 // User service characteristics
-const DIRECTION_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
-const SPEED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
-const LEFT_SENSOR_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
-const RIGHT_SENSOR_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const DIRECTION_CHARACTERISTIC_UUID = 'fbfeb748-be33-4896-9f0f-8cd5a86ea961';
+const SPEED_CHARACTERISTIC_UUID = 'ff4fb94b-98b5-405f-9d4d-1d97b2b12263';
+const LEFT_SENSOR_CHARACTERISTIC_UUID = '5380b1d9-4d37-47b1-ac48-ead2df7b7135';
+const RIGHT_SENSOR_CHARACTERISTIC_UUID = '6c626864-9ae0-4054-822c-1130d8f6f45c';
 
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
@@ -101,7 +101,7 @@ function uiStatusError(message, showLoadingAnimation) {
   elStatus.innerText = message;
 
   // Hide controls
-  elControls.classList.add("hidden");
+  // elControls.classList.add("hidden");
 }
 
 function makeErrorMsg(errorObj) {
@@ -178,8 +178,8 @@ function liffConnectToDevice(device) {
       // Reset LED state
       ledState = false;
       // Reset UI elements
-      uiToggleLedButton(false);
-      uiToggleStateButton(false);
+      // uiToggleLedButton(false);
+      // uiToggleStateButton(false);
 
       // Try to reconnect
       initializeLiff();
