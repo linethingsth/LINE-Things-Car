@@ -19,18 +19,20 @@
   </p>
   <hr />
 
-  <div class="wifi-symbol wifi-symbol-1 ">
-    <div class="wifi-circle first"></div>
-    <div class="wifi-circle second"></div>
-    <div class="wifi-circle third"></div>
-    <div class="wifi-circle fourth"></div>
-  </div>
+  <div class="wifi-symbol-container">
+    <div class="wifi-symbol wifi-symbol-1 ">
+      <div class="wifi-circle first"></div>
+      <div class="wifi-circle second"></div>
+      <div class="wifi-circle third"></div>
+      <div class="wifi-circle fourth"></div>
+    </div>
 
-  <div class="wifi-symbol wifi-symbol-2">
-    <div class="wifi-circle first"></div>
-    <div class="wifi-circle second"></div>
-    <div class="wifi-circle third"></div>
-    <div class="wifi-circle fourth"></div>
+    <div class="wifi-symbol wifi-symbol-2">
+      <div class="wifi-circle first"></div>
+      <div class="wifi-circle second"></div>
+      <div class="wifi-circle third"></div>
+      <div class="wifi-circle fourth"></div>
+    </div>
   </div>
 
   <div class="car">
@@ -48,8 +50,12 @@
       mode: 'semi',
       catchDistance: 50,
       position: { left: '50%', top: '50%' },
-      color: 'black'
+      color: 'white'
     });
+
+    semi.on('start move dir', joystickHandler);
+
+    semi.on('end hidden destroyed', joystickHandler);
   </script>
 </body>
 

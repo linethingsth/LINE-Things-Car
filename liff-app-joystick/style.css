@@ -97,26 +97,32 @@ p {
 }
 
 .zone {
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 30%;
-    left: 0;
-    bottom: 0;
-    background-color: cornsilk;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 30%;
+  left: 0;
+  bottom: 0;
+  background-color: black;
+  opacity: 0.5;
 }
 
 body {
+  overflow: hidden;
   text-align: center;
   vertical-align: center;
   margin: 20px 10px 0;
   background-color: #31313B;
+  color: white;
+}
+
+.wifi-symbol-container {
+  min-width: 325px;
 }
 
 .wifi-symbol {
   display: none;
 }
-
 
 .wifi-symbol [foo], .wifi-symbol-1 {
   position: relative;
