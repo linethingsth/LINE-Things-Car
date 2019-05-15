@@ -1,6 +1,10 @@
 // User service UUID: Change this to your generated service UUID
 const USER_SERVICE_UUID = '36752cf3-739c-4625-aea1-4d47a70ad656'; // LED, Button
 // User service characteristics
+
+const WRITE_CHARACTERISTIC_UUID = "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B" // LED
+const NOTIFY_CHARACTERISTIC_UUID = "62FBD229-6EDD-4D1A-B554-5C4E1BB29169" // button
+
 const DIRECTION_CHARACTERISTIC_UUID = 'fbfeb748-be33-4896-9f0f-8cd5a86ea961';
 const SPEED_CHARACTERISTIC_UUID = 'ff4fb94b-98b5-405f-9d4d-1d97b2b12263';
 const LEFT_SENSOR_CHARACTERISTIC_UUID = '5380b1d9-4d37-47b1-ac48-ead2df7b7135';
@@ -92,7 +96,7 @@ function uiStatusError(message, showLoadingAnimation) {
   uiToggleLoadingAnimation(showLoadingAnimation);
 
   const elStatus = document.getElementById("status");
-  const elControls = document.getElementById("controls");
+  // const elControls = document.getElementById("controls");
 
   // Show status error
   elStatus.classList.remove("success");
@@ -192,6 +196,13 @@ function liffConnectToDevice(device) {
 }
 
 function liffGetUserService(service) {
+  // Notify Characteristic
+  service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID).then(characteristic => {
+    liffGetNotifyCharacteristic(characteristic);
+  }).catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+
   // LEFT Sensor
   service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
     liffGetLeftSensorCharacteristic(characteristic);
@@ -238,6 +249,19 @@ function liffGetPSDIService(service) {
     const psdi = new Uint8Array(value.buffer)
       .reduce((output, byte) => output + ("0" + byte.toString(16)).slice(-2), "");
     document.getElementById("device-psdi").innerText = psdi;
+  }).catch(error => {
+    uiStatusError(makeErrorMsg(error), false);
+  });
+}
+
+function liffGetNotifyCharacteristic(characteristic) {
+  // Add notification hook for left sensor
+  // (Get notified when left sensor changes)
+  characteristic.startNotifications().then(() => {
+    characteristic.addEventListener('characteristicvaluechanged', e => {
+      const val = (new Uint8Array(e.target.value.buffer))[0];
+      console.log("Notify Characteristic", val)
+    });
   }).catch(error => {
     uiStatusError(makeErrorMsg(error), false);
   });
