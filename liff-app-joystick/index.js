@@ -344,6 +344,7 @@ function setSensorActive(el, active) {
 }
 
 function liffSendDirectionState(state) {
+  console.log("liffSendDirectionState", state)
   if (window.directionCharacteristic) {
     var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
     var value = new Uint8Array([directionMapping[state]])
@@ -355,6 +356,7 @@ function liffSendDirectionState(state) {
 }
 
 function liffSendSpeedState(state) {
+  console.log("liffSendSpeedState", state)
   if (window.speedCharacteristic) {
     var speedMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
     var value = new Uint8Array([speedMapping[state]])
