@@ -1,3 +1,7 @@
+html {
+  overflow: hidden;
+}
+
 body, table {
   font-size: 14pt;
   font-family: "Montserrat", sans-serif;
