@@ -6,8 +6,7 @@ const WRITE_CHARACTERISTIC_UUID = "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B" // LED
 const NOTIFY_CHARACTERISTIC_UUID = "62FBD229-6EDD-4D1A-B554-5C4E1BB29169" // button
 
 const DIRECTION_AND_SPEED_CHARACTERISTIC_UUID = 'cf2316b5-96ea-4939-a5e2-f88ef3d91e39';
-const LEFT_SENSOR_CHARACTERISTIC_UUID = '5380b1d9-4d37-47b1-ac48-ead2df7b7135';
-const RIGHT_SENSOR_CHARACTERISTIC_UUID = '6c626864-9ae0-4054-822c-1130d8f6f45c';
+const LEFT_RIGHT_SENSOR_CHARACTERISTIC_UUID = '6c626864-9ae0-4054-822c-1130d8f6f45c';
 
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
@@ -191,20 +190,11 @@ function liffConnectToDevice(device) {
 }
 
 function liffGetUserService(service) {
-  // LEFT Sensor
-  service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
-    window.leftcharacteristic = characteristic;
-    liffGetLeftSensorCharacteristic(characteristic);
+  // LEFT RIGHT Sensor
+  service.getCharacteristic(LEFT_RIGHT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
+    liffGetLeftRightSensorCharacteristic(characteristic);
   }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetUserService: LEFT_SENSOR_CHARACTERISTIC_UUID", error), false);
-  });
-
-  // RIGHT Sensor
-  service.getCharacteristic(RIGHT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
-    window.rightcharacteristic = characteristic;
-    liffGetRightSensorCharacteristic(characteristic);
-  }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetUserService: RIGHT_SENSOR_CHARACTERISTIC_UUID", error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: LEFT_RIGHT_SENSOR_CHARACTERISTIC_UUID", error), false);
   });
 
   // Direction And Speed
@@ -232,50 +222,27 @@ function liffGetPSDIService(service) {
   });
 }
 
-function liffGetNotifyCharacteristic(characteristic) {
-  // Add notification hook for left sensor
-  // (Get notified when left sensor changes)
+function liffGetLeftRightSensorCharacteristic(characteristic) {
+  // Add notification hook for left & right sensor
+  // (Get notified when left & right sensor changes)
   characteristic.startNotifications().then(() => {
     characteristic.addEventListener('characteristicvaluechanged', e => {
-      const val = (new Uint8Array(e.target.value.buffer))[0];
-      console.log("Notify Characteristic", val)
-    });
-  }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetNotifyCharacteristic", error), false);
-  });
-}
-
-function liffGetLeftSensorCharacteristic(characteristic) {
-  // Add notification hook for left sensor
-  // (Get notified when left sensor changes)
-  window.leftcharacteristic.startNotifications().then(() => {
-    window.leftcharacteristic.addEventListener('characteristicvaluechanged', e => {
-      const val = (new Uint8Array(e.target.value.buffer))[0];
-      if (val > 0) {
-        setSensor(true, val)
+      let left = (new Uint8Array(e.target.value.buffer))[0];
+      let right = (new Uint8Array(e.target.value.buffer))[1];
+      if (left > 0) {
+        setSensor(true, left)
       } else {
         setSensor(true, 0)
       }
-    });
-  }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetLeftSensorCharacteristic", error), false);
-  });
-}
 
-function liffGetRightSensorCharacteristic(characteristic) {
-  // Add notification hook for right sensor
-  // (Get notified when right sensor changes)
-  window.rightcharacteristic.startNotifications().then(() => {
-    window.rightcharacteristic.addEventListener('characteristicvaluechanged', e => {
-      const val = (new Uint8Array(e.target.value.buffer))[0];
-      if (val > 0) {
-        setSensor(false, val)
+      if (right > 0) {
+        setSensor(false, right)
       } else {
         setSensor(false, 0)
       }
     });
   }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetRightSensorCharacteristic", error), false);
+    uiStatusError(makeErrorMsg("liffGetLeftRightSensorCharacteristic", error), false);
   });
 }
 
