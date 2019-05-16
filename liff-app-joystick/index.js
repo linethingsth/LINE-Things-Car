@@ -7,6 +7,7 @@ const NOTIFY_CHARACTERISTIC_UUID = "62FBD229-6EDD-4D1A-B554-5C4E1BB29169" // but
 
 const DIRECTION_CHARACTERISTIC_UUID = 'fbfeb748-be33-4896-9f0f-8cd5a86ea961';
 const SPEED_CHARACTERISTIC_UUID = 'ff4fb94b-98b5-405f-9d4d-1d97b2b12263';
+const DIRECTION_AND_SPEED_CHARACTERISTIC_UUID = '';
 const LEFT_SENSOR_CHARACTERISTIC_UUID = '5380b1d9-4d37-47b1-ac48-ead2df7b7135';
 const RIGHT_SENSOR_CHARACTERISTIC_UUID = '6c626864-9ae0-4054-822c-1130d8f6f45c';
 
@@ -25,10 +26,6 @@ let clickCount = 0;
 window.onload = () => {
   initializeApp();
 };
-
-// ----------------- //
-// Handler functions //
-// ----------------- //
 
 // ------------ //
 // UI functions //
@@ -196,13 +193,6 @@ function liffConnectToDevice(device) {
 }
 
 function liffGetUserService(service) {
-  // Notify Characteristic
-  // service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID).then(characteristic => {
-  //   liffGetNotifyCharacteristic(characteristic);
-  // }).catch(error => {
-  //   uiStatusError(makeErrorMsg(error), false);
-  // });
-
   // LEFT Sensor
   service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
     liffGetLeftSensorCharacteristic(characteristic);
@@ -217,26 +207,14 @@ function liffGetUserService(service) {
     uiStatusError(makeErrorMsg("liffGetUserService: RIGHT_SENSOR_CHARACTERISTIC_UUID", error), false);
   });
 
+  // Direction And Speed
+  service.getCharacteristic(DIRECTION_AND_SPEED_CHARACTERISTIC_UUID).then(characteristic => {
+    window.directionSpeedCharacteristic = characteristic;
 
-  // Direction
-  service.getCharacteristic(DIRECTION_CHARACTERISTIC_UUID).then(characteristic => {
-    window.directionCharacteristic = characteristic;
-
-    // Direction 0
-    liffSendDirectionState(0);
+    // Direction 0, Speed 0
+    liffSendDirectionAndSpeedState(0, 0);
   }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetUserService: DIRECTION_CHARACTERISTIC_UUID", error), false);
-  });
-
-
-  // Speed
-  service.getCharacteristic(SPEED_CHARACTERISTIC_UUID).then(characteristic => {
-    window.speedCharacteristic = characteristic;
-
-    // Speed 0
-    liffSendSpeedState(0);
-  }).catch(error => {
-    uiStatusError(makeErrorMsg("liffGetUserService: SPEED_CHARACTERISTIC_UUID", error), false);
+    uiStatusError(makeErrorMsg("liffGetUserService: DIRECTION_AND_SPEED_CHARACTERISTIC_UUID", error), false);
   });
 }
 
@@ -343,29 +321,17 @@ function setSensorActive(el, active) {
   }
 }
 
-function liffSendDirectionState(state) {
-  console.log("liffSendDirectionState", state)
-  if (window.directionCharacteristic) {
-    var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
-    var value = new Uint8Array([directionMapping[state]])
-    console.log("liffSendDirectionValue", value)
-    window.directionCharacteristic.writeValue(value)
-    .catch(error => {
-      uiStatusError(makeErrorMsg("liffSendDirectionState", error), false);
-    });
-  }
-}
+var directionMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06];
+var speedMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05];
 
-function liffSendSpeedState(state) {
-  console.log("liffSendSpeedState", state)
-  if (window.speedCharacteristic) {
-    var speedMapping = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
-    var value = new Uint8Array([speedMapping[state]])
-    console.log("liffSendSpeedValue", value)
-    window.speedCharacteristic.writeValue(value)
-    .catch(error => {
-      uiStatusError(makeErrorMsg("liffSendSpeedState", error), false);
-    });
+function liffSendDirectionAndSpeedState(directionState, speedState) {
+  console.log("liffSendDirectionAndSpeedState: \n Direction State", directionState, ", Speed State", speedState)
+  if (window.directionSpeedCharacteristic) {
+    var value = new Uint8Array([directionMapping[directionState], speedMapping[speedState]])
+    window.directionSpeedCharacteristic.writeValue(value)
+      .catch(error => {
+        uiStatusError(makeErrorMsg("liffSendDirectionAndSpeedState", error), false);
+      });
   }
 }
 
@@ -373,29 +339,42 @@ function getJoystickMapping(degree) {
   return parseInt(degree / 60) + 1;
 }
 
+var prevDirection = -1;
+var prevSpeed = -1;
+
+// ----------------- //
+// Joystick Handler functions //
+// ----------------- //
+
 function joystickHandler(evt, data) {
-  console.log("Force", data.force)
-  if (data.force) {
+  if (data.force && data.force > 0.5 && data.angle && data.angle.degree > 0) {
+    var direction = getJoystickMapping(data.angle.degree);
+    var speed = 0;
+
     if (data.force > 1) {
-      liffSendSpeedState(5);
+      speed = 5
     } else if (data.force > 0.8) {
-      liffSendSpeedState(4);
+      speed = 4
     } else if (data.force > 0.7) {
-      liffSendSpeedState(3);
+      speed = 3
     } else if (data.force > 0.6) {
-      liffSendSpeedState(2);
+      speed = 2
     } else if (data.force > 0.5) {
-      liffSendSpeedState(1);
+      speed = 1
     } else {
-      liffSendSpeedState(0);
+      speed = 0
     }
-    console.log("Degree", data.angle.degree)
-    console.log("JoystickMapping", getJoystickMapping(data.angle.degree))
-    liffSendDirectionState(getJoystickMapping(data.angle.degree))
-  } else {
-    console.log("Reset Speed and Direction")
-    liffSendSpeedState(0);
-    liffSendDirectionState(0);
+
+    if (prevSpeed != speed || direction != prevDirection) {
+      liffSendDirectionAndSpeedState(direction, speed);
+      prevSpeed = speed;
+      prevDirection = direction;
+    }
+  } else if (prevDirection != 0 || prevSpeed != 0) {
+    console.log("Reset Direction and Speed");
+    prevDirection = 0;
+    prevSpeed = 0;
+    liffSendDirectionAndSpeedState(prevDirection, prevSpeed);
   }
 
 }
