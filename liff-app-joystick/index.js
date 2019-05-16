@@ -193,6 +193,7 @@ function liffConnectToDevice(device) {
 function liffGetUserService(service) {
   // LEFT Sensor
   service.getCharacteristic(LEFT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
+    window.leftcharacteristic = characteristic;
     liffGetLeftSensorCharacteristic(characteristic);
   }).catch(error => {
     uiStatusError(makeErrorMsg("liffGetUserService: LEFT_SENSOR_CHARACTERISTIC_UUID", error), false);
@@ -200,6 +201,7 @@ function liffGetUserService(service) {
 
   // RIGHT Sensor
   service.getCharacteristic(RIGHT_SENSOR_CHARACTERISTIC_UUID).then(characteristic => {
+    window.rightcharacteristic = characteristic;
     liffGetRightSensorCharacteristic(characteristic);
   }).catch(error => {
     uiStatusError(makeErrorMsg("liffGetUserService: RIGHT_SENSOR_CHARACTERISTIC_UUID", error), false);
@@ -246,8 +248,8 @@ function liffGetNotifyCharacteristic(characteristic) {
 function liffGetLeftSensorCharacteristic(characteristic) {
   // Add notification hook for left sensor
   // (Get notified when left sensor changes)
-  characteristic.startNotifications().then(() => {
-    characteristic.addEventListener('characteristicvaluechanged', e => {
+  window.leftcharacteristic.startNotifications().then(() => {
+    window.leftcharacteristic.addEventListener('characteristicvaluechanged', e => {
       const val = (new Uint8Array(e.target.value.buffer))[0];
       if (val > 0) {
         setSensor(true, val)
@@ -263,8 +265,8 @@ function liffGetLeftSensorCharacteristic(characteristic) {
 function liffGetRightSensorCharacteristic(characteristic) {
   // Add notification hook for right sensor
   // (Get notified when right sensor changes)
-  characteristic.startNotifications().then(() => {
-    characteristic.addEventListener('characteristicvaluechanged', e => {
+  window.rightcharacteristic.startNotifications().then(() => {
+    window.rightcharacteristic.addEventListener('characteristicvaluechanged', e => {
       const val = (new Uint8Array(e.target.value.buffer))[0];
       if (val > 0) {
         setSensor(false, val)
