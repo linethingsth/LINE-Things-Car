@@ -296,9 +296,9 @@ function liffSendDirectionAndSpeedState(directionState, speedState) {
   if (window.directionSpeedCharacteristic) {
     var value = new Uint8Array([directionMapping[directionState], speedMapping[speedState]])
     window.directionSpeedCharacteristic.writeValue(value)
-      .catch(error => {
-        uiStatusError(makeErrorMsg("liffSendDirectionAndSpeedState", error), false);
-      });
+    .catch(error => {
+      uiStatusError(makeErrorMsg("liffSendDirectionAndSpeedState", error), false);
+    });
   }
 }
 
@@ -313,18 +313,18 @@ var prevSpeed = -1;
 // Joystick Handler functions //
 // ----------------- //
 
-function joystickHandler(evt, data) {
+function joystickHandler(_evt, data) {
   if (data.force && data.force > 0.5 && data.angle && data.angle.degree > 0) {
     var direction = getJoystickMapping(data.angle.degree);
     var speed = 0;
 
-    if (data.force > 1) {
+    if (data.force > 2) {
       speed = 5
-    } else if (data.force > 0.8) {
+    } else if (data.force > 1.6) {
       speed = 4
-    } else if (data.force > 0.7) {
+    } else if (data.force > 1.3) {
       speed = 3
-    } else if (data.force > 0.6) {
+    } else if (data.force > 1) {
       speed = 2
     } else if (data.force > 0.5) {
       speed = 1
@@ -343,5 +343,4 @@ function joystickHandler(evt, data) {
     prevSpeed = 0;
     liffSendDirectionAndSpeedState(prevDirection, prevSpeed);
   }
-
 }

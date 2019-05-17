@@ -52,14 +52,13 @@
   <script>
     var semi = nipplejs.create({
       zone: document.querySelector('.zone.semi'),
-      mode: 'semi',
+      mode: 'static',
       catchDistance: 50,
       position: { left: '50%', top: '50%' },
       color: 'white'
     });
 
     semi.on('start move dir', joystickHandler);
-
     semi.on('end hidden destroyed', joystickHandler);
   </script>
 </body>
