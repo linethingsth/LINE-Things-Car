@@ -6,7 +6,7 @@
 #define DEVICE_NAME "LINE Things TH Demo Car"
 
 // User service UUID: Change this to your generated service UUID
-#define USER_SERVICE_UUID "36752cf3-739c-4625-aea1-4d47a70ad656"
+#define USER_SERVICE_UUID "1e0eb241-d8a5-4c0e-8ded-3ae4fadc9efa"
 
 #define WRITE_CONTROL_CHARACTERISTIC_UUID "cf2316b5-96ea-4939-a5e2-f88ef3d91e39"
 //#define WRITE_DIRECTION_CHARACTERISTIC_UUID "fbfeb748-be33-4896-9f0f-8cd5a86ea961"
